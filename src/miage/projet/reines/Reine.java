@@ -1,5 +1,5 @@
 /*
-
+Created by Axel on 18/01/2014. :)
 ╔══════════════╦════════════════════════════════════════════════════════════╗
 ║  ( (         ║						2013-2014							║
 ║    ) )	   ║				Université Dauphine Paris 9					║
@@ -69,8 +69,10 @@ public class Reine {
         Socket socket = new Socket("localhost", 6000);   //Contacte le Damier sur le port local 6000
         PrintWriter sortie = new PrintWriter(socket.getOutputStream(),true);
         BufferedReader entree = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        sortie.println();
+
+        sortie.println("Ici "+identifiant()+" demande autorisation");
         String rep=entree.readLine();//Attente de la réponse
+
 
     }
 
@@ -149,13 +151,12 @@ public class Reine {
 
 
         broadcast_UDP();
+        try {
 
-
-
-
-
-
-
+            demanderAutorisation();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }

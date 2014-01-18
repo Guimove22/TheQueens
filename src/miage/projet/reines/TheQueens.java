@@ -1,5 +1,5 @@
 /*
-
+Created by Axel on 18/01/2014. :)
 ╔══════════════╦════════════════════════════════════════════════════════════╗
 ║  ( (         ║						2013-2014							║
 ║    ) )	   ║				Université Dauphine Paris 9					║
@@ -15,13 +15,17 @@ package miage.projet.reines;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by Axel on 18/01/2014. :)
- */
+
 public class TheQueens {
 
     private static int taille;
     private static ArrayList<Reine> LesReines  = new ArrayList<Reine>();
+
+    private static void init_damier(int i) throws IOException {
+        Damier damier;
+        damier = new Damier(i);
+        damier.start();
+    }
 
     private static void init_reines(int taille){
         for(int i=0;i<taille;i++){
@@ -39,7 +43,9 @@ public class TheQueens {
     }
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        setTaille(3);
+        setTaille(2);
+        init_damier(taille);
+
         init_reines(taille);
         lancer_reines();
     }
