@@ -27,7 +27,7 @@ public class TheQueens {
         damier.start();
     }
 
-    private static void init_reines(int taille){
+    private static void init_reines(int taille) throws IOException {
         for(int i=0;i<taille;i++){
             LesReines.add(i,new Reine(i,taille));
         }
@@ -37,9 +37,10 @@ public class TheQueens {
         for(int i=0;i<taille;i++){
             LesReines.get(i).turnUDPOn();
         }
-        for(int i=0;i<taille;i++){
+        Thread.sleep(1000);
+        /*for(int i=0;i<taille;i++){
             LesReines.get(i).lancement();
-        }
+        }//*/
     }
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -47,6 +48,7 @@ public class TheQueens {
         init_damier(taille);
 
         init_reines(taille);
+
         lancer_reines();
     }
 
