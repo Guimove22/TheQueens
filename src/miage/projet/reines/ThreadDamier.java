@@ -13,39 +13,23 @@
 package miage.projet.reines;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
- * Created by Axel on 18/01/2014. :)
+ * Created by Axel on 18/01/2014.
  */
-public class TheQueens {
+public class ThreadDamier extends Thread{
 
-    private static int taille;
-    private static ArrayList<Reine> LesReines  = new ArrayList<Reine>();
+    private Socket port;
 
-    private static void init_reines(int taille){
-        for(int i=0;i<taille;i++){
-            LesReines.add(i,new Reine(i,taille));
-        }
+    public ThreadDamier(Socket port){
+        this.port=port;
     }
 
-    private static void lancer_reines() throws IOException, InterruptedException {
-        for(int i=0;i<taille;i++){
-            LesReines.get(i).turnUDPOn();
-        }
-        for(int i=0;i<taille;i++){
-            LesReines.get(i).lancement();
-        }
-    }
-    public static void main(String[] args) throws IOException, InterruptedException {
 
-        setTaille(3);
-        init_reines(taille);
-        lancer_reines();
-    }
 
-    //SETTERS
-    private static void setTaille(int i){
-        taille=i;
-    }
+
 }
