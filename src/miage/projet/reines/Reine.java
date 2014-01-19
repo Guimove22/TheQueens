@@ -18,21 +18,22 @@ import java.io.*;
 public class Reine {
 
 
-    private int[][] damier_local;
-    private int position;//Remarque : il s'agit de la ligne
-    private int numero; //numero est aussi le numero de la colonne
+    private int[] damier_local;
+    private int position;//Remarque : il s'agit de la colonne
+    private int numero; //numero est aussi le numero de la ligne
     private int port;
     private String group;
     private MulticastSocket s;
     private String delims = "[;]";
+    private int conflits;
 
     public Reine(int i,int taille ) throws IOException {
         this.numero=i;
 
-
+        conflits=getConflits();
         System.out.println("I am The Queen n°"+i);
 
-        damier_local=new int[taille][taille];
+        damier_local=new int[taille];
         // Which port should we listen to
         port = 5000;
         // Which address
@@ -43,6 +44,10 @@ public class Reine {
         s.joinGroup(InetAddress.getByName(group));
     }
 
+    private void MiseAJourPosReine(int nReine,int p){
+        damier_local[nReine]=p;
+
+    }
     private void traitement(String mess) throws IOException {
         String[] data;
         data=mess.split(delims);
@@ -50,6 +55,16 @@ public class Reine {
         if(data[1].equals("OK")){
 
             lancement();
+        }
+        else{
+
+
+            if((data[0].equals("Reine"))&&(Integer.parseInt(data[1])!=numero)){
+                System.out.println("Reine "+numero+" Message recu de la reine "+data[1]);
+                int num_reine=Integer.parseInt(data[1]);
+                int pos=Integer.parseInt(data[2]);
+                MiseAJourPosReine(num_reine,pos);
+            }
         }
 
     }
@@ -67,7 +82,7 @@ public class Reine {
         // sending data and not receiving
         // Fill the buffer with some data
         byte[] buf = new byte[1024];
-        String req=identifiant()+numero+";"+position+";";
+        String req=identifiant()+numero+";"+position+";";//
         buf=req.getBytes();
         //for (int i=0; i<buf.length; i++) buf[i] = (byte)i;
         // Create a DatagramPacket
@@ -97,13 +112,15 @@ public class Reine {
         }
         return auto;
     }
+
     private void envoiNouvellePosition() throws Exception{
         boolean auto=false;
         Socket socket = new Socket("localhost", 6000);   //Contacte le Damier sur le port local 6000
         PrintWriter sortie = new PrintWriter(socket.getOutputStream(),true);
         BufferedReader entree = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        sortie.println(identifiant()+"autorisé");
+        sortie.println(identifiant()+"autorise;"+position);
+
         String rep=entree.readLine();//Attente de la réponse
 
 
@@ -137,7 +154,7 @@ public class Reine {
           //  System.out.write(pack.getData(),0,pack.getLength());
             String req;
             req=new String(pack.getData());
-            System.out.println(identifiant()+" a reçu "+req);
+            //System.out.println(identifiant()+" a reçu "+req);
             traitement(req);
             // And when we have finished receiving data leave the multicast group and
             // close the socket
@@ -179,6 +196,26 @@ public class Reine {
     /*public static void main(String[] args) {
         Reine reine=new Reine(args[0]);
     }//*/
+
+
+    public int getConflits(){
+        int res=0;
+
+        for(int i=0;i<getTaille();i++){
+            if(damier_local[i]==position){
+                res++;
+            }
+        }
+        
+
+        System.out.println("conflits" + res);
+        return res;
+    }
+    private void trouverMeilleurePos(){
+        conflits=getConflits();
+        position=(position+1)%getTaille();
+    }
+
     public void lancement() throws IOException {
         // 1) La reine demande a bouger
         // 2) Si autorisée, bouge puis broadcast ses infos
@@ -189,9 +226,15 @@ public class Reine {
         // broadcast_UDP();
         broadcast_UDP_Multicast();
         try {
+            synchronized ((Object)position){
+                if(demanderAutorisation()){
+                    System.out.println(identifiant() + position);
+                    trouverMeilleurePos();
+                    System.out.println(identifiant()+position);
+                    envoiNouvellePosition();
+                    broadcast_UDP_Multicast();
 
-            if(demanderAutorisation()){
-                envoiNouvellePosition();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
