@@ -34,7 +34,7 @@ public class TheQueens {
             LesReines.get(i).turnUDPOn();
         }
         Thread.sleep(1000);
-        /*for(int i=0;i<taille;i++){
+        for(int i=0;i<taille;i++){
             LesReines.get(i).lancement();
         }//*/
     }
@@ -47,14 +47,33 @@ public class TheQueens {
 
         init_reines(taille);
         damier.afficher();
+        // afficherPlateauReine(0);
+
         lancer_reines();
         Thread.sleep(4000);
         damier.afficher();
 
+        afficherEnsembleConflits();
+       /* afficherPlateauReine(0);
+        afficherPlateauReine(1);
+        afficherPlateauReine(2);
+        afficherPlateauReine(3);
+        afficherPlateauReine(4);
+        afficherPlateauReine(5);
+        afficherPlateauReine(6);
+        afficherPlateauReine(7);//*/
+
 
     }
 
+    private static void afficherEnsembleConflits(){
+        for(int i=0;i<taille;i++)
+            System.out.println(i + ":" + LesReines.get(i).getConflits());
+    }
 
+    private static void afficherPlateauReine(int k){
+            LesReines.get(k).plateau();
+    }
     //SETTERS
     private static void setTaille(int i){
         taille=i;

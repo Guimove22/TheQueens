@@ -30,12 +30,12 @@ public class Damier extends Thread{
    public void afficher(){
        System.out.println("\n\tPlateau de jeu\n");
        for (int i=0; i<taille_damier;i++){
-           System.out.print(i+"\t");
+           System.out.print(i + "\t");
            for (int j=0; j<taille_damier;j++){
                if(j==plateau[i]){
-                   System.out.print("R");
+                   System.out.print("R ");
                }else{
-                   System.out.print("_");
+                   System.out.print("_ ");
                }
 
            }
@@ -66,7 +66,7 @@ public class Damier extends Thread{
         // Do a send. Note that send takes a byte for the ttl and not an int.
         s.send(pack,(byte)ttl);
         // And when we have finished sending data close the socket
-        s.close();
+       // s.close();
     }
 
     private void init_jeton(int t){
@@ -94,7 +94,11 @@ public class Damier extends Thread{
         public void run() {
             try {
                 envoyerAuxReines("OK");
+                Thread.sleep(10000);
+                //envoyerAuxReines("STOP");
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -121,21 +125,37 @@ public class Damier extends Thread{
             }else{
                 reponse="Non Autorisé";
             }
-            System.out.println("La " + data[0] + " N°" + data[1] + " demande une autorisation de bouger:" + reponse);
+            //System.out.println("La " + data[0] + " N°" + data[1] + " demande une autorisation de bouger:" + reponse);
         }
 
 
         if(data[2].equals("autorise")){
-            System.out.println("Mi");
             int num_reine=Integer.parseInt(data[1]);
             int p=Integer.parseInt(data[3]);
-            System.out.println("Mise à jour de la pos de la "+data[0]+" N°"+data[1]+" en cours.");
-            System.out.println("La "+data[0]+" N°"+data[1]+" passe de "+plateau[num_reine]+" à "+p);
-
-
+            //System.out.println("Mise à jour de la pos de la "+data[0]+" N°"+data[1]+" en cours.");
+           // System.out.println("La "+data[0]+" N°"+data[1]+" passe de "+plateau[num_reine]+" à "+p);
             MiseAJourPosReine(num_reine,p);
+            jeton[num_reine]=false;
+            int new_reine=(num_reine+1)%taille_damier;
+            //int new_reine=nouvelle_reine(num_reine);
+            jeton[new_reine]=true;
         }
         return reponse;
+    }
+    private int nouvelle_reine(int reine_actuelle){
+        int res=reine_actuelle;
+        int conflits_actuel=getConflits(reine_actuelle);
+        for (int i=0;i<taille_damier;i++){
+            int tmp= getConflits(i);
+            if(tmp>conflits_actuel){
+                res=i;
+                conflits_actuel=tmp;
+            }
+
+        }
+        if (res==reine_actuelle)
+            res=(reine_actuelle+1)%taille_damier;
+        return res;
     }
     private void MiseAJourPosReine(int nR,int p){
         plateau[nR]=p;
@@ -205,5 +225,95 @@ public class Damier extends Thread{
     //GETTERS
     public int get_taille_damier(){
         return this.taille_damier;
+    }
+
+    public int conflitsHautD(int numero){
+        int res=0;
+
+        for (int i=1;i<taille_damier;i++){
+            int ligne_test=plateau[numero]+i;
+
+            int col_test=numero-i;
+            if((ligne_test<taille_damier)&&(col_test>=0)){
+
+                if(plateau[col_test]==ligne_test){
+                    res++;
+                }
+            }else{
+                return res;
+            }
+        }
+        return res;
+    }
+    public int conflitsBasG(int numero){
+        int res=0;
+
+        for (int i=1;i<taille_damier;i++){
+            int ligne_test=plateau[numero]-i;
+
+            int col_test=plateau[numero]+i;
+            if((ligne_test>=0)&&(col_test<taille_damier)){
+
+                if(plateau[col_test]==ligne_test){
+                    res++;
+                }
+            }else{
+                return res;
+            }
+        }
+        return res;
+    }
+    public int conflitsBasD(int numero){
+        int res=0;
+
+        for (int i=1;i<taille_damier;i++){
+            int ligne_test=plateau[numero]+i;
+
+            int col_test=numero+i;
+            if((ligne_test<taille_damier)&&(col_test<taille_damier)){
+
+                if(plateau[col_test]==ligne_test){
+                    res++;
+                }
+            }else{
+                return res;
+            }
+        }
+        return res;
+    }
+    public int conflitsHautG(int numero){
+        int res=0;
+
+        for (int i=1;i<taille_damier;i++){
+            int ligne_test=plateau[numero]-i;
+
+            int col_test=numero-i;
+            if((ligne_test>=0)&&(col_test>=0)){
+
+                if(plateau[col_test]==ligne_test){
+                    res++;
+                }
+            }else{
+                return res;
+            }
+        }
+        return res;
+    }
+
+    public int getConflits(int numero){
+        int res=0;
+
+        for(int i=0;i<taille_damier;i++){
+            if(i!=numero){
+                if(plateau[i]==plateau[numero]){
+                    res++;
+                }
+            }
+        }
+        res=res+conflitsBasD(numero)+conflitsHautG(numero)+conflitsHautD(numero)+conflitsBasG(numero);//+conflitsBasG()+conflitsBasD()+conflitsHautG()+conflitsHautD();
+
+
+
+        return res;
     }
 }
