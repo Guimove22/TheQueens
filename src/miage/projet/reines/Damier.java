@@ -25,6 +25,25 @@ public class Damier extends Thread{
     private ServerSocket s;
     private String delims = "[;]";
     private boolean[] jeton;
+    private int[] plateau;
+
+   public void afficher(){
+       System.out.println("\n\tPlateau de jeu\n");
+       for (int i=0; i<taille_damier;i++){
+           System.out.print(i+"\t");
+           for (int j=0; j<taille_damier;j++){
+               if(j==plateau[i]){
+                   System.out.print("R");
+               }else{
+                   System.out.print("_");
+               }
+
+           }
+           System.out.println();
+
+       }
+       System.out.println();
+   }
 
     private void envoyerAuxReines(String message) throws IOException {
         // Which port should we send to
@@ -60,6 +79,7 @@ public class Damier extends Thread{
         this.taille_damier=taille_damier;
         jeton=new boolean[taille_damier];
         init_jeton(taille_damier);
+        plateau=new int[taille_damier];
         s = new ServerSocket(6000);// Assignation du socket d'écoute
         //Boucle d'écoute des requêtes.
 
@@ -105,12 +125,21 @@ public class Damier extends Thread{
         }
 
 
-        if(data[2].equals("autorisé")){
+        if(data[2].equals("autorise")){
+            System.out.println("Mi");
+            int num_reine=Integer.parseInt(data[1]);
+            int p=Integer.parseInt(data[3]);
             System.out.println("Mise à jour de la pos de la "+data[0]+" N°"+data[1]+" en cours.");
+            System.out.println("La "+data[0]+" N°"+data[1]+" passe de "+plateau[num_reine]+" à "+p);
+
+
+            MiseAJourPosReine(num_reine,p);
         }
         return reponse;
     }
-
+    private void MiseAJourPosReine(int nR,int p){
+        plateau[nR]=p;
+    }
     public class ThreadDamier extends Thread{
         private String delims = "[;]";
         private Socket port;

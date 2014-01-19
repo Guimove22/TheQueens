@@ -21,11 +21,7 @@ public class TheQueens {
     private static int taille;
     private static ArrayList<Reine> LesReines  = new ArrayList<Reine>();
 
-    private static void init_damier(int i) throws IOException {
-        Damier damier;
-        damier = new Damier(i);
-        damier.start();
-    }
+
 
     private static void init_reines(int taille) throws IOException {
         for(int i=0;i<taille;i++){
@@ -44,13 +40,20 @@ public class TheQueens {
     }
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        setTaille(2);
-        init_damier(taille);
+        setTaille(6);
+        Damier damier;
+        damier = new Damier(taille);
+        damier.start();
 
         init_reines(taille);
-
+        damier.afficher();
         lancer_reines();
+        Thread.sleep(4000);
+        damier.afficher();
+
+
     }
+
 
     //SETTERS
     private static void setTaille(int i){
