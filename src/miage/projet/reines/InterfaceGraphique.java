@@ -133,8 +133,9 @@ public class InterfaceGraphique extends JFrame implements ActionListener {
     	}    
     	else if (arg0.getSource() == boutonCreerGrille)
     	{
-    		if (cbxChoixEchiquier.getSelectedItem().toString() == "6")
+    		if (cbxChoixEchiquier.getSelectedItem().equals(6))
     		{
+    			this.remove(container);
     		    // Définition du container et des Layout
     			container.setLayout(new GridLayout(6,6));
     			JLabel tab[][]=new JLabel[6][6];
@@ -151,7 +152,9 @@ public class InterfaceGraphique extends JFrame implements ActionListener {
     					container.add(tab[colonne][ligne]);
     				}
     			}
+    		
     			this.add(container, BorderLayout.CENTER);
+    		
     		}
     	}
 	}
@@ -250,9 +253,6 @@ public class InterfaceGraphique extends JFrame implements ActionListener {
 		    this.menuBar.add(Fichier);
 		    this.setJMenuBar(menuBar);
 			
-
-		    // On attache le JPanel à la fenêtre
-		    MaFenetre.setContentPane(container);
 		  
 		  
 		    // Rendre la fenêtre visible
