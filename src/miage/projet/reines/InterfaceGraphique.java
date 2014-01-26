@@ -131,15 +131,20 @@ public class InterfaceGraphique extends JFrame implements ActionListener {
     	    	System.exit(0);
     	    }
     	}    
+    	// Bouton pour redéfinir la taille de l'échiquier
     	else if (arg0.getSource() == boutonCreerGrille)
     	{
+    		// On commence par effacer ce qu'il y avait avant
+    		container.removeAll();
+    		
     		if (cbxChoixEchiquier.getSelectedItem().equals(6))
     		{
-    			this.remove(container);
+    			
     		    // Définition du container et des Layout
     			container.setLayout(new GridLayout(6,6));
     			JLabel tab[][]=new JLabel[6][6];
     			int a=1;
+    			// On trace un cadrillage
     			for(int ligne=0;ligne<6;ligne++){
     				a = a==1 ? 0 : 1;
     				for(int colonne=0;colonne<6;colonne++){
@@ -152,9 +157,53 @@ public class InterfaceGraphique extends JFrame implements ActionListener {
     					container.add(tab[colonne][ligne]);
     				}
     			}
-    		
-    			this.add(container, BorderLayout.CENTER);
-    		
+    			// MaJ l'affichage
+    			container.updateUI();
+    		}
+    		else if (cbxChoixEchiquier.getSelectedItem().equals(4))
+    		{
+    	 		
+        		    // Définition du container et des Layout
+        			container.setLayout(new GridLayout(4,4));
+        			JLabel tab[][]=new JLabel[4][4];
+        			int a=1;
+        			// On trace un cadrillage
+        			for(int ligne=0;ligne<4;ligne++){
+        				a = a==1 ? 0 : 1;
+        				for(int colonne=0;colonne<4;colonne++){
+        					tab[colonne][ligne]= new JLabel();
+        					//tab[colonne][ligne].setIcon(new ImageIcon("queen.png"));
+        					if((colonne+1)%2==a) tab[colonne][ligne].setBackground(Color.white);
+        					else tab[colonne][ligne].setBackground(Color.black);
+        					tab[colonne][ligne].setOpaque(true);
+        					tab[colonne][ligne].setPreferredSize(new Dimension(80,80));
+        					container.add(tab[colonne][ligne]);
+        				}
+        			}
+        			// MaJ l'affichage
+        			container.updateUI();
+    		}
+    		else if (cbxChoixEchiquier.getSelectedItem().equals(8))
+    		{
+        		    // Définition du container et des Layout
+        			container.setLayout(new GridLayout(8,8));
+        			JLabel tab[][]=new JLabel[8][8];
+        			int a=1;
+        			// On trace un cadrillage
+        			for(int ligne=0;ligne<8;ligne++){
+        				a = a==1 ? 0 : 1;
+        				for(int colonne=0;colonne<8;colonne++){
+        					tab[colonne][ligne]= new JLabel();
+        					//tab[colonne][ligne].setIcon(new ImageIcon("queen.png"));
+        					if((colonne+1)%2==a) tab[colonne][ligne].setBackground(Color.white);
+        					else tab[colonne][ligne].setBackground(Color.black);
+        					tab[colonne][ligne].setOpaque(true);
+        					tab[colonne][ligne].setPreferredSize(new Dimension(80,80));
+        					container.add(tab[colonne][ligne]);
+        				}
+        			}
+        			// MaJ l'affichage
+        			container.updateUI();
     		}
     	}
 	}
